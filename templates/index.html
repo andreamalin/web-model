@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+
+<body>
+    <div class="logo"></div>
+    <section class="section">
+        <div class="columns">
+            <div class="column has-text-centered">
+                <figure class="image has-text-centered">
+
+                    <img class="is-inline-block" src="./streaming_camara" style="width: auto">
+                </figure>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column has-text-centered">
+                <button id="btnIniciarGrabacion">
+                    <div></div>
+                    <p>Start Recording</p>
+                </button>
+                <button id="btnDetenerGrabacion">
+                    <div></div>
+                    <p>Stop Recording</p>
+                </button>
+                <div class="notification is-primary mt-2" id="estado"></div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            const $btnIniciarGrabacion = document.querySelector("#btnIniciarGrabacion"),
+                $btnDetenerGrabacion = document.querySelector("#btnDetenerGrabacion"),
+                $estado = document.querySelector("#estado");
+
+            const obtenerEstadoDeGrabacionYRefrescarVista = async () => {
+                const respuestaRaw = await fetch("./estado_grabacion");
+                const grabando = await respuestaRaw.json();
+                if (grabando) {
+                    $btnIniciarGrabacion.style.display = "none";
+                    $btnDetenerGrabacion.style.display = "flex";
+                } else {
+                    $btnDetenerGrabacion.style.display = "none";
+                    $btnIniciarGrabacion.style.display = "flex";
+                }
+            };
+            obtenerEstadoDeGrabacionYRefrescarVista();
+            /*
+                Iniciar grabación
+            */
+            $btnIniciarGrabacion.onclick = async () => {
+                const respuestaRaw = await fetch("./comenzar_grabacion");
+                const respuesta = await respuestaRaw.json();
+                if (respuesta) {
+                    obtenerEstadoDeGrabacionYRefrescarVista();
+                } else {
+                    obtenerEstadoDeGrabacionYRefrescarVista();
+                }
+            };
+
+            $btnDetenerGrabacion.onclick = async () => {
+                const respuestaRaw = await fetch("./detener_grabacion");
+                const respuesta = await respuestaRaw.json();
+                if (respuesta) {
+                    obtenerEstadoDeGrabacionYRefrescarVista();
+                } else {
+                    obtenerEstadoDeGrabacionYRefrescarVista();
+                }
+            };
+        </script>
+    </section>
+</body>
+
+</html>
